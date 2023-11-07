@@ -1,8 +1,9 @@
 from django.db import models
 from cafe.models import Cafe
 from menu.models import Set
-from tables.models import Table
 from azu_bot_django.settings import MAX_CHAR_LENGHT
+from tables.models import ReservationTable
+from django.db.models import UniqueConstraint
 
 
 class Reservation(models.Model):
@@ -13,10 +14,14 @@ class Reservation(models.Model):
         verbose_name='В кафе'
     )
     tables = models.ManyToManyField(
-        Table
+        ReservationTable,
+        verbose_name='Столы',
+        related_name='tables'
     )
     sets = models.ManyToManyField(
-        "OrderSets"
+        Set,
+        through='OrderSets',
+        verbose_name='Заказы'
     )
     date = models.DateField(
         'Дата бронирования'
@@ -40,14 +45,30 @@ class Reservation(models.Model):
 
 
 class OrderSets(models.Model):
-    sets = models.ForeignKey(Set, on_delete=models.CASCADE)
-    quantity = models.IntegerField(
-        'Количество сета'
+    reservation = models.ForeignKey(
+        Reservation,
+        on_delete=models.CASCADE,
+        related_name='order_sets',
+        verbose_name='Бронь'
+    )
+    set = models.ForeignKey(
+        Set,
+        on_delete=models.CASCADE,
+        verbose_name='Сет'
+    )
+    quantity = models.PositiveIntegerField(
+        verbose_name='Количество сета'
     )
 
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+        constraints = [
+            UniqueConstraint(
+                fields=('reservation', 'set'),
+                name='unique_reservation_set'
+            ),
+        ]
 
     def __str__(self):
-        return f'Заказ {self.sets} в количестве {self.quantity}'
+        return f'Заказ {self.set} в количестве {self.quantity}'
