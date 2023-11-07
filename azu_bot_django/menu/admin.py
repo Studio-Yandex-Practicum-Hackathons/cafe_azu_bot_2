@@ -2,12 +2,18 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
-from .models import Set, Dishes
+from .models import Set, Dish, SetDish
+
+
+class SetDishInline(admin.TabularInline):
+    model = SetDish
+    extra = 1
 
 
 @admin.register(Set)
 class SetAdmin(admin.ModelAdmin):
     list_display = ("name", "description", "view_dishes", "price")
+    inlines = [SetDishInline]
 
     def view_dishes(self, obj):
         count = obj.dishes.count()
@@ -16,7 +22,7 @@ class SetAdmin(admin.ModelAdmin):
         else:
             short_description = 'блюд'
         url = (
-            reverse("admin:menu_dishes_changelist")
+            reverse("admin:menu_dish_changelist")
             + "?"
             + urlencode({"set__id": f"{obj.id}"})
         )
@@ -26,6 +32,6 @@ class SetAdmin(admin.ModelAdmin):
     view_dishes.short_description = "Блюд"
 
 
-@admin.register(Dishes)
-class DishesAdmin(admin.ModelAdmin):
+@admin.register(Dish)
+class DishAdmin(admin.ModelAdmin):
     list_display = ("name", "description")

@@ -1,8 +1,29 @@
 from django.contrib import admin
 from django.urls import reverse
+from django import forms
 from django.utils.html import format_html
 from django.utils.http import urlencode
+from django.core.exceptions import ValidationError
+
+
 from .models import Reservation, OrderSets
+
+
+class OrderSetsInline(admin.TabularInline):
+    model = OrderSets
+    extra = 1
+
+
+class ReservationForm(forms.ModelForm):
+    def clean(self):
+        super(ReservationForm, self).clean()
+        print(self)
+        tables_pk = self.cleaned_data['tables']
+        for table in tables_pk:
+            if self.cleaned_data['cafe'].id != table.table.cafe.id:
+                raise ValidationError(
+                    "Кафе и столы в кафе должны совпадать по местоположению"
+                )
 
 
 @admin.register(Reservation)
@@ -10,6 +31,8 @@ class ReservationAdmin(admin.ModelAdmin):
     list_display = ("cafe", "view_tables", "view_order_sets",
                     "name", "number", "date")
     list_filter = ("date", )
+    inlines = [OrderSetsInline]
+    form = ReservationForm
 
     def view_tables(self, obj):
         count = obj.tables.count()
@@ -23,7 +46,7 @@ class ReservationAdmin(admin.ModelAdmin):
         for table in obj.tables.all():
             if quantity:
                 quantity += ', '
-            quantity += str(table.quantity)
+            quantity += str(table.table.quantity)
 
         return str(count) + short_description + 'на ' + quantity + ' человек'
     view_tables.short_description = 'Столов'

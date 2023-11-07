@@ -14,6 +14,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 MAX_CHAR_LENGHT = 256
+MAX_DIGIT_LENGHT = 10
+MAX_DECIMAL_LENGHT = 2
 
 INSTALLED_APPS = [
     'django.contrib.admin',
