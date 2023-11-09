@@ -1,5 +1,5 @@
 from django.db import models
-from cafe.models import Cafe
+from cafes.models import Cafe
 
 
 class Table(models.Model):

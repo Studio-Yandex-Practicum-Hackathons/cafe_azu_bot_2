@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
-from .models import Set, Dish, SetDish
+from menus.models import Set, Dish, SetDish
 
 
 class SetDishInline(admin.TabularInline):

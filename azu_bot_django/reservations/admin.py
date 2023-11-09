@@ -6,7 +6,7 @@ from django.utils.http import urlencode
 from django.core.exceptions import ValidationError
 
 
-from .models import Reservation, OrderSets
+from reservations.models import Reservation, OrderSets
 
 
 class OrderSetsInline(admin.TabularInline):
@@ -16,8 +16,10 @@ class OrderSetsInline(admin.TabularInline):
 
 class ReservationForm(forms.ModelForm):
     def clean(self):
+        """
+        Проверка нахождения столов в забронированном кафе
+        """
         super(ReservationForm, self).clean()
-        print(self)
         tables_pk = self.cleaned_data['tables']
         for table in tables_pk:
             if self.cleaned_data['cafe'].id != table.table.cafe.id:
@@ -34,7 +36,21 @@ class ReservationAdmin(admin.ModelAdmin):
     inlines = [OrderSetsInline]
     form = ReservationForm
 
+    def get_queryset(self, request):
+        """
+        Персонал получит только брони его кафе,
+        суперпользователя это не касается
+        """
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(cafe=request.user.cafe.id)
+
     def view_tables(self, obj):
+        """
+        Отображение количества забронированых столов
+        и их вместительности на панели броней
+        """
         count = obj.tables.count()
         quantity = ''
         if count == 1:
@@ -52,6 +68,10 @@ class ReservationAdmin(admin.ModelAdmin):
     view_tables.short_description = 'Столов'
 
     def view_order_sets(self, obj):
+        """
+        Отображение количества заказанных сетов
+        и переход на панель с этими заказами
+        """
         count = obj.sets.count()
         if count == 1:
             short_description = 'Заказ'
@@ -60,9 +80,9 @@ class ReservationAdmin(admin.ModelAdmin):
         else:
             short_description = 'Заказов'
         url = (
-            reverse("admin:reservation_ordersets_changelist")
+            reverse("admin:reservations_ordersets_changelist")
             + "?"
-            + urlencode({"reservation__id": f"{obj.id}"})
+            + urlencode({"reservations__id": f"{obj.id}"})
         )
         return format_html(
             '<a href="{}">{} {}</a>', url, count, short_description

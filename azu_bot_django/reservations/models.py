@@ -1,6 +1,6 @@
 from django.db import models
-from cafe.models import Cafe
-from menu.models import Set
+from cafes.models import Cafe
+from menus.models import Set
 from azu_bot_django.settings import MAX_CHAR_LENGHT
 from tables.models import ReservationTable
 from django.db.models import UniqueConstraint
@@ -45,6 +45,9 @@ class Reservation(models.Model):
 
 
 class OrderSets(models.Model):
+    """
+    Связующий класс между бронью(Reservation) и сетами(Set)
+    """
     reservation = models.ForeignKey(
         Reservation,
         on_delete=models.CASCADE,

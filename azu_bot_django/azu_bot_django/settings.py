@@ -17,6 +17,8 @@ MAX_CHAR_LENGHT = 256
 MAX_DIGIT_LENGHT = 10
 MAX_DECIMAL_LENGHT = 2
 
+AUTH_USER_MODEL = 'users.CustomUser'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -24,10 +26,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'cafe.apps.CafeConfig',
-    'menu.apps.MenuConfig',
-    'reservation.apps.ReservationConfig',
+    'cafes.apps.CafesConfig',
+    'users.apps.UsersConfig',
+    'menus.apps.MenusConfig',
+    'reservations.apps.ReservationsConfig',
     'tables.apps.TablesConfig',
 ]
 
@@ -96,7 +98,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -108,3 +110,39 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+PERMISSIONS_LIST = [
+    "view_cafe",
+    "view_customuser",
+    "view_dish",
+    "view_set",
+    "view_setdish",
+    "view_ordersets",
+    "view_reservation",
+    "view_table",
+    "view_reservationtable",
+
+    "add_dish",
+    "add_set",
+    "add_setdish",
+    "add_ordersets",
+    "add_reservation",
+    "add_table",
+    "add_reservationtable",
+
+    "change_dish",
+    "change_set",
+    "change_setdish",
+    "change_ordersets",
+    "change_reservation",
+    "change_table",
+    "change_reservationtable",
+
+    "delete_dish",
+    "delete_set",
+    "delete_setdish",
+    "delete_ordersets",
+    "delete_reservation",
+    "delete_table",
+    "delete_reservationtable"
+]

@@ -64,6 +64,9 @@ class Dish(models.Model):
 
 
 class SetDish(models.Model):
+    """
+    Связующий класс между Сетами(Set) и блюдами(Dish)
+    """
     set = models.ForeignKey(Set, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(
