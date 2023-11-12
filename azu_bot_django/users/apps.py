@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class Azu_Bot_DjangoConfig(AppConfig):
+class UsersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'admin_users'
+    name = 'users'
