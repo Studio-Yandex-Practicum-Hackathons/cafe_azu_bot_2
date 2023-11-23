@@ -8,13 +8,11 @@ APScheduler==3.10.4
 asgiref==3.7.2
 async-timeout==4.0.3
 attrs==23.1.0
-certifi==2023.7.22
-charset-normalizer==3.3.
-emoji==2.8.0
-environs==9.5.0
 autoflake==2.2.1
 autopep8==2.0.4
 certifi==2023.7.22
+emoji==2.8.0
+environs==9.5.0
 charset-normalizer==3.3.2
 Django==4.2.7
 django-ckeditor==6.7.0
@@ -43,6 +41,7 @@ sqlparse==0.4.4
 typing_extensions==4.7.1
 tzdata==2023.3
 tzlocal==5.2
+requests==2.31.0 
 unify==0.5
 untokenize==0.1.1
 yarl==1.9.2

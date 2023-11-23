@@ -23,13 +23,11 @@ def back_kbd():
     )
 
 
-def cafe_select_kbd():
+def cafe_select_kbd(cafes):
     """Клавиатура выбора кафе."""
     keyboard_builder = ReplyKeyboardBuilder()
-    keyboard_builder.button(text='ул. Чистопольская, 2')
-    keyboard_builder.button(text='ул. Петербургская, 52')
-    keyboard_builder.button(text='ул. Павлюхина, 91')
-    keyboard_builder.button(text='ул. Петербургская, 14')
+    for cafe in cafes:
+        keyboard_builder.button(text=cafe['address'])
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,

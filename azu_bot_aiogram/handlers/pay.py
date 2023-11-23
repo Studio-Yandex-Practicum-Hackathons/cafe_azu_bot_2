@@ -5,6 +5,7 @@ from aiogram.types import LabeledPrice, Message, PreCheckoutQuery
 from handlers.appsched import get_reminder_time
 from settings import settings
 from utils.states import StepsForm
+from handlers.api import get_cafe, post_reservation
 
 
 async def order(message: Message, bot: Bot, state: FSMContext):
@@ -58,9 +59,24 @@ async def order(message: Message, bot: Bot, state: FSMContext):
     )
 
 
-async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery, bot: Bot):
+async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery, bot: Bot, state: FSMContext):
     """Обработка заказа. Поскольку у нас нет доставки, тут авто согласие."""
+    cafes = await get_cafe()
+    context_data = await state.get_data()
+    address_cafe = context_data.get('address')
+    for cafe in cafes:
+        if cafe['address'] == address_cafe:
+            break
+    data_dict = {}
+    data_dict['quantity'] = context_data.get('person_amount')
+    data_dict['sets'] = [{'sets': 1, 'quantity': 2}]
+    data_dict['date'] = '-'.join(context_data.get('date').split('.')[::-1])
+    data_dict['name'] = context_data.get('name')
+    data_dict['number'] = context_data.get('phone')
+    answer = await post_reservation(cafe['id'], data_dict)
+    """При неудачной оплате answer['error'] вернет no_places, не уверен куда вести дальше"""
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
+
 
 
 async def succesfull_payment(
