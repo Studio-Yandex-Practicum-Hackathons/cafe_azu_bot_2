@@ -14,15 +14,16 @@ from keyboards.reply_keyboards import (back_kbd, cafe_select_kbd,
                                        people_per_table_kbd,
                                        reserve_or_back_kbd, table_or_back_kbd,)
 from utils.states import StepsForm
-
+from handlers.api import get_cafe
 
 async def get_start(message: Message, bot: Bot, state: FSMContext):
     """Приветствие и выбор адреса кафе."""
+    cafes = await get_cafe()
     await message.answer('Ассэламуалейкум!\n'
                          'Я чат-бот сети кафе АЗУ!\n'
                          'Рады будем приготовить для Вас ифтар!\n'
                          'Пожалуйста выберите адрес кафе:',
-                         reply_markup=cafe_select_kbd())
+                         reply_markup=cafe_select_kbd(cafes))
     await state.set_state(StepsForm.CHOOSE_CAFE)
 
 
@@ -86,8 +87,17 @@ async def back_to_set(message: Message, bot: Bot, state: FSMContext):
 
 async def get_contacts(message: Message, bot: Bot, state: FSMContext):
     """Страничка контактов выбранного кафе."""
-    await message.answer('***Тут должны быть контакты выбранного кафе***',
-                         reply_markup=back_kbd())
+    cafes = await get_cafe()
+    context_data = await state.get_data()
+    address_cafe = context_data.get('address')
+    cafe_number = ''
+    for cafe in cafes:
+        if cafe['address'] == address_cafe:
+            break
+    cafe_address = cafe['address']
+    await message.answer(f'Номер выбранного кафе: {cafe_number}\n'
+                        'Режим работы: ежедневно с 9:00 до 20:00',
+                        reply_markup=back_kbd())
     await state.set_state(StepsForm.CAFE_ADDRESS)
 
 

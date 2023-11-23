@@ -13,9 +13,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-MAX_CHAR_LENGHT = 256
-MAX_DIGIT_LENGHT = 15
-MAX_DECIMAL_LENGHT = 2
+MAX_CHAR_LENGTH = 256
+MAX_DIGIT_LENGTH = 15
+MAX_DECIMAL_LENGTH = 2
 
 AUTH_USER_MODEL = 'admin_users.CustomUser'
 
@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'ckeditor',
+    'rest_framework.authtoken',
+    # 'ckeditor',
     'cafe',
     'menu',
     'reservation',
@@ -35,8 +36,8 @@ INSTALLED_APPS = [
     'tables',
 ]
 
-CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_JQUERY_URL = 'https://cdn.jsdelivr.net/jquery/3.5.1/jquery.min.js'
+# CKEDITOR_UPLOAD_PATH = 'uploads/'
+# CKEDITOR_JQUERY_URL = 'https://cdn.jsdelivr.net/jquery/3.5.1/jquery.min.js'
 
 
 MIDDLEWARE = [
@@ -114,6 +115,22 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+}
