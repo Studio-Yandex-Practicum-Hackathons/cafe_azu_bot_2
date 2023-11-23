@@ -2,6 +2,7 @@ from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 # from keyboards.inline_keyboards import food_kbd
+from handlers.media_group import get_media_group
 from keyboards.reply_keyboards import (back_kbd, cafe_select_kbd,
                                        check_order_kbd,
                                        choose_another_cafe_kbd,
@@ -155,8 +156,10 @@ async def get_phone(message: Message, bot: Bot, state: FSMContext):
 
 async def choose_set(message: Message, bot: Bot, state: FSMContext):
     """Интерактивное меню для оформления заказа с количеством порций."""
+    await get_media_group(message, bot)
     await message.answer('***Тут появляются сеты для формирования заказа***',
                          reply_markup=go_to_pay_or_choose_food_kbd())
+
     if message.text is not None and not message.text.startswith('Назад'):
         await state.update_data(phone=message.text)
     else:
