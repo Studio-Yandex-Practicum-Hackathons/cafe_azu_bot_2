@@ -45,7 +45,7 @@ async def start():
     dp.message.register(
         order, F.text == 'Оплатить через ЮКасса', StepsForm.PAY_STATE
     )
-    dp.pre_checkout_query.register(pre_checkout_query)
+    dp.pre_checkout_query.register(pre_checkout_query, StepsForm.PAY_STATE)
     dp.message.register(
         succesfull_payment, F.successful_payment, StepsForm.PAY_STATE,
     )
