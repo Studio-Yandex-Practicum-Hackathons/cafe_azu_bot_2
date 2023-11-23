@@ -2,11 +2,9 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from azu_bot_django.settings import (
-  MAX_CHAR_LENGHT,
-  MAX_DECIMAL_LENGHT,
-  MAX_DIGIT_LENGHT
-)
+from azu_bot_django.settings import (MAX_CHAR_LENGTH, MAX_DECIMAL_LENGTH,
+                                     MAX_DIGIT_LENGTH)
+
 
 class Dishes(models.Model):
     name = models.CharField(
@@ -16,6 +14,7 @@ class Dishes(models.Model):
     description = models.CharField(
         'Описание блюда',
         max_length=MAX_CHAR_LENGTH
+    )
     image = models.ImageField(
         upload_to='dishes/',
         verbose_name='Изображение блюда',
@@ -34,7 +33,7 @@ class Dishes(models.Model):
 class Set(models.Model):
     name = models.CharField(
         'Название сета',
-        max_length=MAX_CHAR_LENGHT,
+        max_length=MAX_CHAR_LENGTH,
         unique=True
     )
     description = models.CharField(
@@ -49,8 +48,8 @@ class Set(models.Model):
     )
     price = models.DecimalField(
         verbose_name='Цена сета',
-        decimal_places=MAX_DECIMAL_LENGHT,
-        max_digits=MAX_DIGIT_LENGHT
+        decimal_places=MAX_DECIMAL_LENGTH,
+        max_digits=MAX_DIGIT_LENGTH
     )
     image = models.ImageField(
         upload_to='sets/',
@@ -62,7 +61,7 @@ class Set(models.Model):
     class Meta:
         verbose_name = 'Сет'
         verbose_name_plural = 'Сеты'
-        ordering = ("price", "name",)
+        ordering = ('price', 'name',)
 
     def __str__(self):
         return f'{self.name} по цене {self.price}'
@@ -87,15 +86,6 @@ class SetDish(models.Model):
                 name='unique_set_dish'
             ),
         ]
-
-    def clean(self):
-        if SetDish.objects.filter(
-            set=self.set,
-            dish=self.dish
-        ):
-            raise ValidationError(
-                "Такой сет уже существует!"
-            )
 
     def __str__(self):
         return f'{self.quantity} {self.dish.name}'
