@@ -1,7 +1,7 @@
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-# from keyboards.inline_keyboards import food_kbd
+from handlers.api import get_cafe
 from handlers.media_group import get_media_group
 from keyboards.reply_keyboards import (back_kbd, cafe_select_kbd,
                                        check_order_kbd,
@@ -12,9 +12,10 @@ from keyboards.reply_keyboards import (back_kbd, cafe_select_kbd,
                                        main_cafe_kbd,
                                        move_tables_or_change_cafe_kbd,
                                        people_per_table_kbd,
-                                       reserve_or_back_kbd, table_or_back_kbd,)
+                                       reserve_or_back_kbd, table_or_back_kbd)
+from handlers.sets_for_order import make_sets
 from utils.states import StepsForm
-from handlers.api import get_cafe
+
 
 async def get_start(message: Message, bot: Bot, state: FSMContext):
     """Приветствие и выбор адреса кафе."""
@@ -129,7 +130,10 @@ async def person_per_table(message: Message, bot: Bot, state: FSMContext):
     """Выбор количества персон для брони стола."""
     await message.answer('Укажите количество персон',
                          reply_markup=people_per_table_kbd())
-    await state.update_data(date=message.text)
+    if message.text.startswith('Назад'):
+        pass
+    else:
+        await state.update_data(date=message.text)
     await state.set_state(StepsForm.PERSON_AMOUNT)
 
 
@@ -166,15 +170,33 @@ async def get_phone(message: Message, bot: Bot, state: FSMContext):
 
 async def choose_set(message: Message, bot: Bot, state: FSMContext):
     """Интерактивное меню для оформления заказа с количеством порций."""
-    await get_media_group(message, bot)
-    await message.answer('***Тут появляются сеты для формирования заказа***',
-                         reply_markup=go_to_pay_or_choose_food_kbd())
-
     if message.text is not None and not message.text.startswith('Назад'):
         await state.update_data(phone=message.text)
     else:
         pass
+    await get_media_group(message, bot)
     await state.set_state(StepsForm.ORDER_STATE)
+
+
+async def confirm_order(
+        message: Message, bot: Bot, sets: dict, state: FSMContext
+    ):
+    """Выводит заказ пользователя в преобразованом виде для проверки."""
+    make_sets(sets)
+    await state.update_data(total_price=f'{sets["total_price"]}')
+    del sets['total_price']
+    await state.update_data(data_sets=sets)
+    context_data = await state.get_data()
+    data_sets_order = context_data.get('data_sets')
+    total_price = context_data.get('total_price')
+    print(f'Data sets == {data_sets_order}')
+    text = 'Вы выбрали:\n'
+    for number, amount in data_sets_order.items():
+        text += f'Сет №{number} в количестве {amount} шт.\n'
+    text += f'Общая стоимость: {total_price} руб.'
+
+    await message.answer(text=text,
+                         reply_markup=go_to_pay_or_choose_food_kbd())
 
 
 async def get_true_contact(
@@ -199,14 +221,20 @@ async def check_order_go_to_pay(message: Message, bot: Bot, state: FSMContext):
     date = context_data.get('date')
     person_amount = context_data.get('person_amount')
     address = context_data.get('address')
-    await message.answer('Проверьте Ваш заказ:\n'
-                         f'Имя: {name}\n'
-                         f'Телефон: {phone}\n'
-                         f'Дата: {date}\n'
-                         f'Адрес: г. Казань, {address}\n'
-                         f'Количество гостей: {person_amount}\n'
-                         'Вы заказали:\n'
-                         '***Тут должно быть перечисление сетов***',
+    data_sets_order = context_data.get('data_sets')
+    total_price = context_data.get('total_price')
+    text = (
+        'Проверьте Ваш заказ:\n'
+        f'Имя: {name}\n'
+        f'Телефон: {phone}\n'
+        f'Дата: {date}\n'
+        f'Адрес: г. Казань, {address}\n'
+        f'Количество гостей: {person_amount}\n'
+    )
+    for number, amount in data_sets_order.items():
+        text += f'Сет №{number} в количестве {amount} шт.\n'
+    text += f'Общая стоимость: {total_price} руб.'
+    await message.answer(text=text,
                          reply_markup=check_order_kbd())
     await state.set_state(StepsForm.ORDER_CHECK_PAY)
 
