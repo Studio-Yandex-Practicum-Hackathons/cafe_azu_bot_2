@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    # 'ckeditor',
+    'ckeditor',
     'cafe',
     'menu',
     'reservation',
@@ -36,8 +36,8 @@ INSTALLED_APPS = [
     'tables',
 ]
 
-# CKEDITOR_UPLOAD_PATH = 'uploads/'
-# CKEDITOR_JQUERY_URL = 'https://cdn.jsdelivr.net/jquery/3.5.1/jquery.min.js'
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_JQUERY_URL = 'https://cdn.jsdelivr.net/jquery/3.5.1/jquery.min.js'
 
 
 MIDDLEWARE = [
@@ -118,8 +118,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
