@@ -143,6 +143,10 @@ async def name_for_reserving(message: Message, bot: Bot, state: FSMContext):
                          reply_markup=enter_name_kbd())
     if message.text.startswith('Назад'):
         pass
+    elif message.text.startswith('Сдвигать'):
+        pass
+    elif message.text.startswith('ул.'):
+        await state.update_data(address=message.text)
     else:
         await state.update_data(person_amount=message.text)
     await state.set_state(StepsForm.NAME_STATE)
@@ -248,6 +252,7 @@ async def choose_pay_method(message: Message, bot: Bot, state: FSMContext):
 
 async def no_free_table(message: Message, bot: Bot, state: FSMContext):
     """Диалог при отсутствии свободных столов."""
+    await state.update_data(person_amount=message.text)
     await message.answer('К сожалению нужного Вам столика нет в наличии.\n'
                          'Можем предложить Вам соединить несколько столов '
                          ' или забронировать стол в другом кафе нашей сети.',
@@ -257,7 +262,8 @@ async def no_free_table(message: Message, bot: Bot, state: FSMContext):
 
 async def choose_another_cafe(message: Message, bot: Bot, state: FSMContext):
     """Выбрать кафе со свободными столами запрошенной вместимости."""
+    cafes = await get_cafe()
     await message.answer(
         '***Тут список кафе со свободными столами запрошенной вместимости***',
-        reply_markup=choose_another_cafe_kbd())
+        reply_markup=choose_another_cafe_kbd(cafes))
     await state.set_state(StepsForm.CHOOSE_ANOTHER_CAFE)

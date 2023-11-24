@@ -103,13 +103,12 @@ def move_tables_or_change_cafe_kbd():
     )
 
 
-def choose_another_cafe_kbd():
+def choose_another_cafe_kbd(cafes):
     """Выбрать другое кафе, если в текущем нет столов."""
     keyboard_builder = ReplyKeyboardBuilder()
-    keyboard_builder.button(text='Чистопольская, 2')
-    keyboard_builder.button(text='Петербургская, 52')
-    keyboard_builder.button(text='Павлюхина, 91')
-    keyboard_builder.button(text='Петербургская, 14')
+    for cafe in cafes:
+        keyboard_builder.button(text=cafe['address'])
+    keyboard_builder.adjust(2)
     keyboard_builder.button(text='Назад ' + emojize(':reverse_button:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
