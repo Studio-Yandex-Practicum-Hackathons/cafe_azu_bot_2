@@ -111,8 +111,24 @@ async def cafe_menu(message: Message, bot: Bot, state: FSMContext):
 
 async def route_to_cafe(message: Message, bot: Bot, state: FSMContext):
     """Страничка адреса и геометки выбранного кафе."""
-    await message.answer('***Тут должны быть адреса и геометка***',
-                         reply_markup=table_or_back_kbd())
+    context_data = await state.get_data()
+    address = context_data.get('address')
+    if address == 'ул. Чистопольская, 2':
+        await message.answer_location(
+            55.81806843439635, 49.100637931202876,
+            reply_markup=table_or_back_kbd())
+    elif address == 'ул. Петербургская, 52':
+        await message.answer_location(
+            55.780572101932165, 49.1340455744581,
+            reply_markup=table_or_back_kbd())
+    elif address == 'ул. Павлюхина, 91':
+        await message.answer_location(
+            55.76910772993048, 49.148523032671854,
+            reply_markup=table_or_back_kbd())
+    else:
+        await message.answer_location(
+            55.78533167814833, 49.12500099911571,
+            reply_markup=table_or_back_kbd())
     await state.set_state(StepsForm.CAFE_ADDRESS)
 
 
