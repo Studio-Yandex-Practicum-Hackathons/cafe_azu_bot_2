@@ -1,6 +1,6 @@
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message
 from handlers.api import get_cafe
 from handlers.media_group import get_media_group
 from keyboards.reply_keyboards import (back_kbd, cafe_select_kbd,
@@ -96,9 +96,11 @@ async def get_contacts(message: Message, bot: Bot, state: FSMContext):
         if cafe['address'] == address_cafe:
             break
     cafe_address = cafe['address']
-    await message.answer(f'Номер выбранного кафе: {cafe_number}\n'
-                        'Режим работы: ежедневно с 9:00 до 20:00',
-                        reply_markup=back_kbd())
+    await message.answer(
+        f'Номер выбранного кафе: {cafe_number}\n'
+        'Режим работы: ежедневно с 9:00 до 20:00',
+        reply_markup=back_kbd()
+    )
     await state.set_state(StepsForm.CAFE_ADDRESS)
 
 
@@ -200,7 +202,7 @@ async def choose_set(message: Message, bot: Bot, state: FSMContext):
 
 async def confirm_order(
         message: Message, bot: Bot, sets: dict, state: FSMContext
-    ):
+):
     """Выводит заказ пользователя в преобразованом виде для проверки."""
     make_sets(sets)
     await state.update_data(total_price=f'{sets["total_price"]}')

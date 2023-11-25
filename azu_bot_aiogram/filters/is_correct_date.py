@@ -12,8 +12,9 @@ class IsCorrectDate(BaseFilter):
                 day, month, year = message.text.split('.')
                 incoming_date = date(int(year), int(month), int(day))
                 if (
-                     incoming_date.strftime('%Y.%m.%d') >=
-                     datetime.now().strftime('%Y.%m.%d')):
+                    incoming_date.strftime('%Y.%m.%d')
+                    >= datetime.now().strftime('%Y.%m.%d')
+                ):
                     return {'date': message.text}
                 else:
                     return False

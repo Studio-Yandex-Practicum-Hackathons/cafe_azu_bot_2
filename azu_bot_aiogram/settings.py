@@ -1,10 +1,11 @@
-from dataclasses import dataclass
 import os
+from dataclasses import dataclass
 
-from environs import Env
 from dotenv import load_dotenv
+from environs import Env
 
 load_dotenv()
+
 
 @dataclass
 class Bots:
@@ -29,6 +30,7 @@ def get_settings(path: str):
             provider_token=env.str('PROVIDER_TOKEN'),
         )
     )
+
 
 django_token = os.getenv('DJANGO_TOKEN')
 settings = get_settings('.env')
