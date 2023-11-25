@@ -1,3 +1,5 @@
+# Исходники кода под inline-menu
+
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from handlers.callback_setup import SetGroup, SetInfo
 

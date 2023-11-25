@@ -1,6 +1,6 @@
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, ReplyKeyboardRemove
 from handlers.api import get_cafe
 from handlers.media_group import get_media_group
 from keyboards.reply_keyboards import (back_kbd, cafe_select_kbd,
@@ -209,7 +209,6 @@ async def confirm_order(
     context_data = await state.get_data()
     data_sets_order = context_data.get('data_sets')
     total_price = context_data.get('total_price')
-    print(f'Data sets == {data_sets_order}')
     text = 'Вы выбрали:\n'
     for number, amount in data_sets_order.items():
         text += f'Сет №{number} в количестве {amount} шт.\n'
@@ -283,3 +282,10 @@ async def choose_another_cafe(message: Message, bot: Bot, state: FSMContext):
         '***Тут список кафе со свободными столами запрошенной вместимости***',
         reply_markup=choose_another_cafe_kbd(cafes))
     await state.set_state(StepsForm.CHOOSE_ANOTHER_CAFE)
+
+
+async def wrong_input(message: Message, bot: Bot):
+    """Сообщение о некорректном пользовательском вводе."""
+    await message.answer(
+        'Не могу обработать поступившую информацию, пожалуйста попробуйте '
+        'ещё раз. Или перезапустите бота по команде /start')
