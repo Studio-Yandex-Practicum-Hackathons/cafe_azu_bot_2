@@ -27,7 +27,6 @@ from handlers.basic import (back_to_cafe_menu, back_to_date, back_to_name,
                             no_free_table, person_per_table, route_to_cafe,
                             wrong_input)
 from handlers.pay import order, pre_checkout_query, succesfull_payment
-from handlers.menu import back_to_catalog
 from middlewares.appshed_middelware import SchedulerMiddleware
 from settings import settings
 from utils.states import StepsForm
@@ -60,7 +59,6 @@ async def start():
         F.successful_payment,
         StepsForm.PAY_STATE
     )
-    dp.callback_query.register(back_to_catalog)
     dp.message.register(
         get_start,
         Command(commands=['start', 'run'])
@@ -140,7 +138,9 @@ async def start():
         choose_date,
         F.text == 'Забронировать стол',
         or_f(
-            StepsForm.CAFE_INFO, StepsForm.CAFE_ADDRESS, StepsForm.MENU_WATCH
+            StepsForm.CAFE_INFO,
+            StepsForm.CAFE_ADDRESS,
+            StepsForm.MENU_WATCH
         )
     )
     dp.message.register(
