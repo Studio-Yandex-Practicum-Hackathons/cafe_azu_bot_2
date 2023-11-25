@@ -45,3 +45,6 @@ requests==2.31.0
 unify==0.5
 untokenize==0.1.1
 yarl==1.9.2
+gunicorn==20.0.4
+psycopg2-binary==2.8.6
+
