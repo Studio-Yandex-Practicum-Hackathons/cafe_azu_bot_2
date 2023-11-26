@@ -1,5 +1,7 @@
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from emoji import emojize
+from aiogram.types.web_app_info import WebAppInfo
+import settings
 
 
 def start_kbd():
@@ -37,7 +39,10 @@ def cafe_select_kbd(cafes):
 def main_cafe_kbd():
     """Основная клавиатура навигации по кафе."""
     keyboard_builder = ReplyKeyboardBuilder()
-    keyboard_builder.button(text='Посмотреть меню')
+    keyboard_builder.button(text='Посмотреть меню',
+                            web_app=WebAppInfo(
+                             url=f'https://127.0.0.1:{settings.PORT}/menulist'
+                                ))
     keyboard_builder.button(text='Забронировать стол')
     keyboard_builder.button(text='Как добраться')
     keyboard_builder.button(text='Контакты и режим работы')
