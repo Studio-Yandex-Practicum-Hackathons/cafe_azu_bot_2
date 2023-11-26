@@ -32,5 +32,6 @@ def get_settings(path: str):
     )
 
 
+PORT = os.getenv('PORT')
 django_token = os.getenv('DJANGO_TOKEN')
 settings = get_settings('.env')
